@@ -11,14 +11,16 @@ import scipy.optimize as sopt
 def normal_formula(strike, spot, vol, texp, intr=0.0, divr=0.0, cp=1):
     div_fac = np.exp(-texp*divr)
     disc_fac = np.exp(-texp*intr)
+    
     forward = spot / disc_fac * div_fac
-
+    
     if( texp<0 or vol*np.sqrt(texp)<1e-8 ):
         return disc_fac * np.fmax( cp*(forward-strike), 0 )
 
     vol_std = np.fmax(vol * np.sqrt(texp), 1.0e-16)
     d = (forward - strike) / vol_std
-
+    
+    
     price = disc_fac * (cp * (forward - strike) * ss.norm.cdf(cp * d) + vol_std * ss.norm.pdf(d))
     return price
 
